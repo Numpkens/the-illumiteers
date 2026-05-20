@@ -1,0 +1,60 @@
+# ==========================================
+# PRE-FLIGHT CHECKLIST & PROJECT DUE OUTS
+# PROJECT: The Illumiteers Station
+# CLIENT PREPARATION REQUIRED
+# ==========================================
+
+To completely execute this build within an AI-driven IDE, you need to collect several API keys, system credentials, and asset definitions. Save these into an environment file (.env) in your workspace so the IDE can read them safely.
+
+---
+
+## 1. GOOGLE SHEETS SETUP (Your Database)
+Because your backend bypasses a traditional database by writing directly to Google Sheets, you need a Google Service Account to give the Go engine write access.
+
+- [ ] Create a Google Cloud Project:
+  - Go to the Google Cloud Console (https://console.cloud.google.com/).
+  - Create a new project named "Lorcana Community Hub".
+- [ ] Enable the Google Sheets API:
+  - In your project dashboard, go to "APIs & Services" > "Library".
+  - Search for "Google Sheets API" and click Enable.
+- [ ] Generate a Service Account Key:
+  - Go to "APIs & Services" > "Credentials".
+  - Click Create Credentials and select Service Account.
+  - Give it a name (e.g., sheets-backend-writer) and click Create.
+  - Once created, click on the Service Account email address, navigate to the Keys tab, click Add Key > Create New Key, and select JSON.
+  - Download this file! Open it and copy its raw contents. This text string will be your GOOGLE_APPLICATION_CREDENTIALS_JSON.
+- [ ] Initialize Your Spreadsheet:
+  - Create a brand new Google Sheet in your personal Google Drive.
+  - Create three distinct tabs named EXACTLY:
+    1. News Tips
+    2. Content Requests
+    3. Community Moments
+  - Share the spreadsheet with the unique service account email address (found in your downloaded JSON file) and grant it Editor permissions.
+  - Copy the long random string out of the spreadsheet URL bar (between /d/ and /edit). This string is your GOOGLE_SHEET_ID.
+
+---
+
+## 2. YOUTUBE API SETUP (Your Media Engine)
+To fetch your stream data automatically, the system needs public access to your YouTube meta channels.
+
+- [ ] Enable the YouTube Data API v3:
+  - Back in the Google Cloud Console library, search for "YouTube Data API v3" and click Enable.
+- [ ] Generate a Public API Key:
+  - Go back to "Credentials", click Create Credentials, and choose API Key.
+  - Copy this string. This is your YOUTUBE_API_KEY.
+- [ ] Locate Your Channel ID:
+  - Find your unique YouTube Channel ID (often found in your YouTube Advanced Account Settings string starting with UC...). This is your YOUTUBE_CHANNEL_ID.
+
+---
+
+## 3. SUMMARY OF ENVIRONMENT VARIABLES (Your Final Due Outs List)
+Collect all of these values and place them into a file named .env in the root of your project directory:
+
+PORT=8080
+ALLOWED_ORIGIN=http://localhost:5173
+YOUTUBE_API_KEY=AIzaSyYourKeyHere...
+YOUTUBE_CHANNEL_ID=UCYourChannelIDHere...
+GOOGLE_SHEET_ID=1YourSpreadsheetIDHere...
+GOOGLE_APPLICATION_CREDENTIALS_JSON={"type": "service_account", "project_id": ...}
+
+Once this data is captured, your AI IDE can execute the instruction template seamlessly!
