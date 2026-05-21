@@ -39,3 +39,4 @@ ENV STATIC_DIR=/app/frontend/dist
 
 # Run Go server
 CMD ["/app/server"]
+
