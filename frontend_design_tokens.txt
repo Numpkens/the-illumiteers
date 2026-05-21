@@ -1,0 +1,48 @@
+# =========================================================================
+# FRONTEND VISUAL DESIGN TOKENS & COMPONENTS SPECIFICATION
+# TARGET: Tailwind CSS / Svelte
+# DESIGN STYLE: Disney Lorcana TCG Card Aesthetic (Clean & Professional)
+# =========================================================================
+
+## 1. GLOBAL PALETTE & TYPOGRAPHY
+- Background: Off-white/cream parchment canvas (`bg-amber-50` or `#faf5e6`).
+- Primary Accents: Deep ink purple (`bg-purple-900`, `text-purple-950`).
+- Borders: Solid, clean black lines (`border-black` or `border-neutral-900`).
+- Font Stack: Serif for prominent headers (mimicking Lorcana card titles), clean Sans-Serif for body copy and data input forms.
+- Background Decorative Layer (Card Floating Effect):
+  - The main page wrapper must include a fixed, non-scrolling background wrapper layer.
+  - Using absolute/fixed positioning, inject 3 to 4 faint, pastel-tinted decorative cards floating behind the main content panels.
+  - Apply CSS rotations (`rotate-6`, `-rotate-12`) and high transparency (`opacity-10` to `opacity-20`) to these background cards so they stay subtle and do not interfere with text readability.
+  - Ensure `z-index` values place these decorative card shapes strictly *behind* the main content containers (`z-0`), while content grid elements sit safely on top (`relative z-10`).
+
+---
+
+## 2. COMPONENT A: HERO SPLIT WORKSPACE (Top Zone)
+- Layout: Modern grid split (`grid grid-cols-1 lg:grid-cols-12 gap-6`).
+- Left Column (Active Video Frame - span 7):
+  - Aspect ratio locked container (`aspect-video w-full`).
+  - Outer border treatment: Thick 4px amber border wrapping the active YouTube player frame (`border-amber-500 rounded-lg`).
+- Right Column (Submission Console - span 5):
+  - Card base: Solid white background with a subtle lavender bounding outline (`border-purple-200 shadow-md rounded-xl`).
+  - Navigation Tabs: Three uniform segment triggers (`Submit a Tip`, `Content Request`, `Share a Moment`). 
+  - Tab Selection Feedback: The active tab must invert to a solid deep purple block with bold white text and rounded top borders.
+
+---
+
+## 3. COMPONENT B: "RECENT GLIMMERS" GALLERY (Bottom Zone)
+- Grid Distribution: Responsive multi-row framework (`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`).
+- Individual Item Layout: Styled to perfectly emulate an authentic physical trading card asset.
+  - Card Dimensions: Constrain container proportions to vertical card standards (`aspect-[2.5/3.5]`).
+  - Card Base: Cream backing frame (`bg-amber-100`) wrapped in a stark 4px solid black perimeter frame line (`border-4 border-black rounded-2xl p-3`).
+  - Header Row Elements: 
+    1. Card Name text aligned to the far left.
+    2. An absolute-positioned, rotated 45-degree square box on the right displaying a bold generic stat value (simulating card ink cost).
+  - Central Illustration Frame: Bounded 4:3 display canvas capturing the API video thumbnail (`aspect-[4/3] rounded-lg border-2 border-purple-900`). Thumbnail must occupy the space seamlessly using object-cover configurations.
+  - Core Body/Text Frame: An inner card textual element box in stark white background. Text snippets from the YouTube description should display in muted small italics (`text-xs italic text-gray-700`). Use structural line truncation rules to freeze row alignment boundaries at exactly 3 vertical text rows.
+  - Metadata Footer: Small caps, monospace typography tracking directly at the baseline layout limit: "ITEM - COLLECTION - VIDEO".
+
+---
+
+## 4. UI INTERACTIVE PARADIGMS
+- Selection State: Clicking any card inside the "Recent Glimmers" grid updates the main view store. The top Hero zone's iframe source must immediately reload with the newly selected stream configuration.
+- Submission Behavior: The form execution routine should hide input tags upon hitting the `/api/submit` route, injecting a high-visibility, card-game themed overlay reading: "Success! Liam has received your submission."

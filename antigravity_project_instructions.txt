@@ -1,0 +1,122 @@
+# ==========================================
+# SYSTEM ARCHITECTURE & DEVELOPMENT PROMPT
+# PROJECT: The Illumiteers Station - Community Hub for Liam
+# STACK: Go Backend / Svelte Frontend (Vite) / Google Sheets API / YouTube API v3
+# ARCHITECTURE: Monorepo
+# ==========================================
+
+You are an expert full-stack developer and system architect. You are being given complete instructions to initialize, scaffold, and implement a web application. Follow every layout rule, file schema, API design, and styling detail provided below precisely. Do not truncate code, leave placeholders, or omit error handling.
+
+---
+
+## 1. TARGET DIRECTORY STRUCTURE
+Initialize the repository with this exact monorepo structure. Create all paths, files, and initial wrappers.
+
+/lorcana-community-platform
+├── /backend
+│   ├── /cmd
+│   │   └── /server
+│   │       └── main.go
+│   ├── /internal
+│   │   ├── /sheets
+│   │   │   └── client.go
+│   │   ├── /youtube
+│   │   │   └── service.go
+│   │   └── /handlers
+│   │       └── routes.go
+│   ├── go.mod
+│   └── go.sum
+├── /frontend
+│   ├── /src
+│   │   ├── /components
+│   │   │   ├── HeroSection.svelte
+│   │   │   ├── SubmissionForm.svelte
+│   │   │   └── GlimmerCard.svelte
+│   │   ├── /stores
+│   │   │   └── videoStore.js
+│   │   ├── App.svelte
+│   │   └── main.js
+│   ├── package.json
+│   ├── vite.config.js
+│   └── tailwind.config.js
+└── README.md
+
+---
+
+## 2. GO BACKEND ENGINE SPECIFICATIONS
+
+### 2.1 Server Configuration (`backend/cmd/server/main.go`)
+- Instantiate a standard net/http router (or lightweight modern router like github.com/go-chi/chi/v5).
+- Read environment variables: PORT, GOOGLE_APPLICATION_CREDENTIALS_JSON, GOOGLE_SHEET_ID, YOUTUBE_API_KEY, YOUTUBE_CHANNEL_ID, ALLOWED_ORIGIN.
+- Implement global CORS middleware allowing ALLOWED_ORIGIN.
+
+### 2.2 Google Sheets Integration (`backend/internal/sheets/client.go`)
+- Initialize a client using google.golang.org/api/sheets/v4.
+- Authenticate natively using a Service Account JSON string passed via environment variables.
+- Expose an append function: AppendSubmission(sheetName string, rowData []interface{}) error.
+- Map incoming data types to specific sheet tabs:
+  - "tip" -> Appends to tab "News Tips" (Columns: Timestamp, Name, Contact, Content, ReferenceLink)
+  - "request" -> Appends to tab "Content Requests" (Columns: Timestamp, Requester, SuggestedTitle, RequestDetails, ReferenceLink)
+  - "moment" -> Appends to tab "Community Moments" (Columns: Timestamp, Submitter, EventDescription, MediaURL)
+
+### 2.3 YouTube API & Cache Service (`backend/internal/youtube/service.go`)
+- Connect to google.golang.org/api/youtube/v3.
+- Implement a thread-safe memory cache wrapping an internal struct array:
+  type YouTubeVideo struct {
+      ID          string `json:"id"`
+      Title       string `json:"title"`
+      Description string `json:"description"`
+      Thumbnail   string `json:"thumbnailUrl"`
+      Duration    string `json:"duration"`
+      PublishedAt string `json:"publishedAt"`
+  }
+- Expose a GetCachedFeed() ([]YouTubeVideo, error) function.
+- If cache is empty or older than 20 minutes, call the YouTube API (PlaylistItems.List("snippet") using the channel's upload playlist), refresh cache in memory, and serve to bypass daily quota limitations.
+
+### 2.4 HTTP Route Handlers (`backend/internal/handlers/routes.go`)
+- GET /api/youtube: Returns HTTP 200 JSON payload of []YouTubeVideo.
+- POST /api/submit: Parses JSON structure containing form variants. Validates text lengths. Calls the Google Sheets integration. Returns {"status": "success"} on completion.
+
+---
+
+## 3. SVELTE FRONTEND SPECIFICATIONS
+
+### 3.1 Global State Store (`frontend/src/stores/videoStore.js`)
+- Maintain a writable store containing videoList (array) and activeVideoId (string).
+- Upon page layout mount, pull /api/youtube to seed the store. The first video in the array defaults to activeVideoId.
+
+### 3.2 Hero Layout Component (`frontend/src/components/HeroSection.svelte`)
+- Dual-column layout matching approved mockup dimensions using Tailwind styling primitives: grid grid-cols-1 lg:grid-cols-12 gap-6.
+- Left Pane (Video Player - span 7):
+  - Contains an aspect-locked element hosting a responsive YouTube embed iframe: https://www.youtube.com/embed/$activeVideoId.
+  - Beneath the player, display the active video's bold title text wrapped in a deep-purple typography layout class.
+- Right Pane (Form Suite - span 5):
+  - Displays a clean box styled wrapper with three tabs: Submit a Tip, Content Request, and Share a Moment.
+  - Toggling tabs sets a local variable (let currentForm = 'tip').
+
+### 3.3 Submission Form Component (`frontend/src/components/SubmissionForm.svelte`)
+- Depending on currentForm, display native input fields:
+  - Submit a Tip: Inputs for Title, Details, Reference Link.
+  - Content Request: Inputs for Request Description, Suggested Title, Optional Reference Links.
+  - Share a Moment: Inputs for Submitter Name, Milestone Details, Media Link.
+- Implement an async submitForm() handler sending JSON payloads via fetch POST to /api/submit. Include localized state management handling loading spinners and a bright success notice once confirmed.
+
+### 3.4 Lorcana Trading-Card Video Grid (`frontend/src/components/GlimmerCard.svelte`)
+- Render a grid layout below the hero section: grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6.
+- Map over videoList. For each item, build a custom trading card wrapper containing:
+  - Thick black border framing, custom rounded corners (rounded-2xl), soft amber-cream parchment background tint (#faf5e6 or bg-amber-50).
+  - Header Row: Video title positioned on the left; an asymmetric hexagonal bounding box on the right displaying an inline mock cost integer (e.g., 6 or 1).
+  - Card Art Frame: An aspect-locked canvas bounding the YouTube video thumbnail frame seamlessly inside deep purple framing borders.
+  - Description Text Block: A standard inner white block displaying a clean text snippet of the YouTube description, using Tailwind line clamping (line-clamp-3) to maintain precise uniform heights across all cards.
+  - Footer: Monospaced structural text markers in gray: ITEM - COLLECTION - VIDEO.
+- Interactivity: Clicking a card triggers a store update setting activeVideoId to that card's video sequence, snapping the hero iframe up top directly to that stream.
+
+---
+
+## 4. CODE EXECUTION COMMANDS
+1. Scaffold directories and fill modules progressively according to descriptions.
+2. Build structural routing bindings and tie sheets append engines completely.
+3. Apply comprehensive error wrappers to prevent panic traps.
+4. Export modular clean JavaScript inside components using modern Svelte script tags.
+
+Begin scaffolding immediate framework.
