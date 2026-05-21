@@ -1,7 +1,9 @@
 # Stage 1: Build Svelte Frontend
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app
-COPY frontend/package*.json ./
+# Explicitly name both files to guarantee case matches perfectly
+COPY frontend/package.json ./
+COPY frontend/package-lock.json ./
 RUN npm install
 COPY frontend/ ./
 RUN npm run build
