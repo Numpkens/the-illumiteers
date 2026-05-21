@@ -65,7 +65,7 @@ func main() {
 	// SPA Static File Server and Fallback Routing
 	staticDir := os.Getenv("STATIC_DIR")
 	if staticDir == "" {
-		staticDir = "./frontend/dist"
+		staticDir = "./dist"
 	}
 	fileServer(r, "/", staticDir)
 
