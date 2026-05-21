@@ -2,3 +2,13 @@
 .env.production
 *.json
 node_modules/
+
+# Un-ignore essential project configuration files
+!package.json
+!package-lock.json
+!vercel.json
+!jsconfig.json
+!**/package.json
+!**/package-lock.json
+!**/vercel.json
+!**/jsconfig.json
