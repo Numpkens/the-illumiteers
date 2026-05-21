@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/go-chi/chi/v5"
@@ -55,11 +56,18 @@ func main() {
 	h := handlers.NewHandler(youtubeSrv, sheetsCli)
 	h.RegisterRoutes(r)
 
-	// Health Check / Root Index
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	// Health Check
+	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(`{"app": "The Illumiteers API", "status": "ok"}`))
 	})
+
+	// SPA Static File Server and Fallback Routing
+	staticDir := os.Getenv("STATIC_DIR")
+	if staticDir == "" {
+		staticDir = "./frontend/dist"
+	}
+	fileServer(r, "/", staticDir)
 
 	addr := fmt.Sprintf(":%s", port)
 	fmt.Printf("Starting server on %s...\n", addr)
@@ -84,6 +92,46 @@ func corsMiddleware(allowedOrigin string) func(http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+// fileServer sets up a http.FileServer for a chi router to serve static files
+// from a directory, falling back to index.html if the file does not exist.
+func fileServer(r chi.Router, path string, root string) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit URL parameters.")
+	}
+
+	fs := http.StripPrefix(path, http.FileServer(http.Dir(root)))
+
+	if path != "/" {
+		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
+		path += "*"
+	} else {
+		path = "/*"
+	}
+
+	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
+		// Clean the path to prevent directory traversal
+		cleanPath := filepath.Clean(r.URL.Path)
+		filePath := filepath.Join(root, cleanPath)
+
+		// Check if file exists
+		info, err := os.Stat(filePath)
+		if os.IsNotExist(err) || info.IsDir() {
+			// If it's an API route that wasn't matched, return a 404 JSON instead of HTML
+			if strings.HasPrefix(r.URL.Path, "/api/") {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusNotFound)
+				w.Write([]byte(`{"error": "API route not found"}`))
+				return
+			}
+			// If file doesn't exist, serve index.html
+			http.ServeFile(w, r, filepath.Join(root, "index.html"))
+			return
+		}
+
+		fs.ServeHTTP(w, r)
+	})
 }
 
 func loadEnvFromLocations() {
