@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { API_BASE } from '../lib/api';
 
 export const videoList = writable([]);
 export const activeVideoId = writable('');
@@ -9,7 +10,7 @@ export async function loadVideos() {
   isLoading.set(true);
   error.set(null);
   try {
-    const res = await fetch('http://localhost:8080/api/youtube');
+    const res = await fetch(`${API_BASE}/youtube`);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }

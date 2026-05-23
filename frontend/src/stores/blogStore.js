@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { API_BASE } from '../lib/api';
 
 export const blogList = writable([]);
 export const isBlogLoading = writable(true);
@@ -8,7 +9,7 @@ export async function loadBlogPosts() {
   isBlogLoading.set(true);
   blogError.set(null);
   try {
-    const response = await fetch('http://localhost:8080/api/blog');
+    const response = await fetch(`${API_BASE}/blog`);
     if (!response.ok) {
       throw new Error(`Failed to load blog scrolls. Server status: ${response.status}`);
     }

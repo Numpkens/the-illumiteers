@@ -1,4 +1,5 @@
 <script>
+  import { API_BASE } from '../lib/api';
   export let currentForm = 'tip';
 
   // State management
@@ -91,7 +92,7 @@
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/submit', {
+      const response = await fetch(`${API_BASE}/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
