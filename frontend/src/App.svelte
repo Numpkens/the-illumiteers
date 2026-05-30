@@ -27,7 +27,7 @@
 </svelte:head>
 
 <!-- Structured Wallpaper Matrix Layer (z-0) -->
-<div aria-hidden="true" class="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-[#F4EFE6] select-none grid grid-cols-6 md:grid-cols-10 lg:grid-cols-12 gap-x-8 gap-y-16 p-4">
+<div aria-hidden="true" class="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-[#F4EFE6] bg-cover bg-fixed select-none grid grid-cols-6 md:grid-cols-10 lg:grid-cols-12 gap-x-8 gap-y-16 p-4">
   {#each Array(72) as _, i}
     {#if i % 4 === 0}
       <div class="w-10 h-14 rounded-sm bg-teal-800/10 font-serif text-[10px] select-none text-black/5 flex flex-col justify-between p-1 shadow-sm transition-all duration-300 pointer-events-none {i % 3 === 0 ? 'rotate-6' : '-rotate-12'}">
@@ -63,7 +63,7 @@
     <div class="absolute bottom-2 left-1/3 text-white/10 text-lg select-none pointer-events-none font-serif">✦</div>
     <div class="absolute top-4 left-10 text-white/15 text-sm select-none pointer-events-none font-serif">✦</div>
 
-    <div class="w-full max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16 md:h-20">
+    <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-4 sm:px-6 lg:px-8 py-4 md:py-0 min-h-[4rem] md:h-20 gap-4">
       <!-- Title & Branding -->
       <div class="flex items-center space-x-3">
         <img
@@ -72,17 +72,17 @@
           class="w-10 h-10 object-contain rounded-full border border-white/20 bg-black/40"
         />
         <div class="flex flex-col text-left">
-          <h1 class="font-serif font-black text-xl sm:text-2xl text-white tracking-tight uppercase leading-none">
+          <h1 class="font-serif font-black text-[clamp(1.15rem,4.5vw,1.5rem)] text-white tracking-tight uppercase leading-[1.3]">
             The Illumiteers
           </h1>
-          <span class="text-[10px] font-mono tracking-widest text-amber-300 uppercase mt-1">
+          <span class="text-[10px] font-mono tracking-widest text-[#FAF5E6] uppercase mt-1" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);">
             A Lorcana Community Hub
           </span>
         </div>
       </div>
 
       <!-- Navigation Tabs -->
-      <nav aria-label="Main Navigation" class="flex items-center justify-center gap-6 md:gap-10 mx-auto px-4">
+      <nav aria-label="Main Navigation" class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 md:gap-10 mx-auto px-4">
         <button
           type="button"
           on:click={() => currentTab = 'dashboard'}
@@ -112,11 +112,11 @@
       <!-- Hero Splitting Zone (Top Area) -->
       <section id="top-workspace" class="mb-12">
         {#if $isLoading}
-          <div class="w-full min-h-[440px] flex flex-col items-center justify-center bg-transparent border-4 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-8">
+          <div class="w-full min-h-[320px] md:min-h-[440px] flex flex-col items-center justify-center bg-transparent border-4 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-8">
             <div class="w-16 h-16 bg-purple-100 border-2 border-black rounded-full flex items-center justify-center animate-spin mb-4">
               <span class="text-purple-950 font-black text-2xl">✦</span>
             </div>
-            <h3 class="font-serif font-bold text-lg text-purple-950 uppercase">Summoning Community Hub...</h3>
+            <h3 class="font-serif font-bold text-[clamp(1rem,4.5vw,1.125rem)] text-purple-950 uppercase leading-[1.3]">Summoning Community Hub...</h3>
             <p class="text-xs font-sans text-gray-500 mt-1">Drawing video glimmers and environment keys</p>
           </div>
         {:else}
@@ -129,7 +129,7 @@
         <div class="mb-8">
           <div class="flex items-center space-x-2">
             <div class="w-3 h-3 bg-purple-900 rotate-45"></div>
-            <h2 class="font-serif font-black text-2xl text-purple-950 uppercase tracking-tight">
+            <h2 class="font-serif font-black text-[clamp(1.35rem,6vw,1.875rem)] text-purple-950 uppercase tracking-tight leading-[1.3]">
               Recent Glimmers
             </h2>
           </div>
@@ -140,19 +140,19 @@
 
         {#if $isLoading}
           <!-- Grid list skeleton cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6">
             {#each Array(4) as _}
               <SkeletonCard type="video" />
             {/each}
           </div>
         {:else if $error && $videoList.length === 0}
           <div class="p-6 bg-red-50 border-4 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-center">
-            <h3 class="font-serif font-bold text-red-700 text-lg uppercase">Summoning Failed</h3>
+            <h3 class="font-serif font-bold text-red-700 text-[clamp(1rem,4.5vw,1.125rem)] uppercase leading-[1.3]">Summoning Failed</h3>
             <p class="text-sm font-sans text-red-600 mt-1">{$error}</p>
           </div>
         {:else}
           <!-- Grid list mapping cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6">
             {#each $videoList as video, index (video.id)}
               <GlimmerCard {video} {index} />
             {/each}
@@ -165,7 +165,7 @@
         <div class="mb-8">
           <div class="flex items-center space-x-2">
             <div class="w-3 h-3 bg-purple-900 rotate-45"></div>
-            <h2 class="font-serif font-black text-2xl text-purple-950 uppercase tracking-tight">
+            <h2 class="font-serif font-black text-[clamp(1.35rem,6vw,1.875rem)] text-purple-950 uppercase tracking-tight leading-[1.3]">
               Lore & Strategy Guides
             </h2>
           </div>

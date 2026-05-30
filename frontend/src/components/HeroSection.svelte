@@ -41,7 +41,7 @@
     
     {#if activeVideo}
       <div class="mt-4 p-1">
-        <h2 class="text-xl md:text-2xl font-serif font-black text-purple-950 tracking-tight leading-tight">
+        <h2 class="text-[clamp(1.2rem,5vw,1.5rem)] font-serif font-black text-purple-950 tracking-tight leading-[1.3]">
           {activeVideo.title}
         </h2>
         <div class="mt-2 flex items-center space-x-3 text-[#4A3565] opacity-80 font-normal tracking-wide text-sm font-sans">
@@ -55,7 +55,7 @@
 
   <!-- Submission Form Suite (Right Pane - span 5) -->
   <div class="lg:col-span-5 flex flex-col">
-    <div class="bg-transparent border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rounded-2xl overflow-hidden flex flex-col h-full min-h-[440px]">
+    <div class="bg-transparent border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rounded-2xl overflow-hidden flex flex-col h-full min-h-[320px] md:min-h-[440px]">
       <!-- Tab Headers -->
       <div class="grid grid-cols-3 border-b-4 border-black bg-transparent">
         <button

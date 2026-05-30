@@ -44,22 +44,22 @@
       <div class="w-14 h-14 bg-purple-100 border-2 border-black rounded-full flex items-center justify-center animate-spin mb-4">
         <span class="text-purple-950 font-black text-xl">✦</span>
       </div>
-      <h3 class="font-serif font-bold text-lg text-purple-950 uppercase">Unrolling Strategy Scrolls...</h3>
+      <h3 class="font-serif font-bold text-[clamp(1rem,4.5vw,1.125rem)] text-purple-950 uppercase leading-[1.3]">Unrolling Strategy Scrolls...</h3>
       <p class="text-xs font-sans text-gray-500 mt-1">Drawing guides from the Illumiteers vault</p>
     </div>
-    <div class="flex flex-wrap justify-center gap-4 p-4 max-w-7xl mx-auto relative z-10 bg-transparent">
+    <div class="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 p-4 max-w-7xl mx-auto relative z-10 bg-transparent w-full">
       {#each Array(3) as _}
         <SkeletonCard type="blog" />
       {/each}
     </div>
   {:else if $blogError && $blogList.length === 0}
     <div class="max-w-4xl mx-auto p-8 bg-red-50 border-4 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] text-center">
-      <h3 class="font-serif font-bold text-red-700 text-lg uppercase">Summoning Failed</h3>
+      <h3 class="font-serif font-bold text-red-700 text-[clamp(1rem,4.5vw,1.125rem)] uppercase leading-[1.3]">Summoning Failed</h3>
       <p class="text-sm font-sans text-red-600 mt-1">{$blogError}</p>
     </div>
   {:else}
-    <!-- Strategy Guide Collectible Card Flexbox Grid -->
-    <div class="flex flex-wrap justify-center gap-4 p-4 max-w-7xl mx-auto relative z-10 bg-transparent">
+    <!-- Strategy Guide Collectible Card Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 p-4 max-w-7xl mx-auto relative z-10 bg-transparent w-full">
       {#each $blogList as post, index}
         {@const theme = themes[index % 6]}
         <!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
@@ -68,7 +68,7 @@
           role="button"
           on:click={() => selectedPost = post}
           on:keydown={(e) => handleKeyDown(e, post)}
-          class="w-full sm:w-[260px] md:w-[280px] h-[280px] flex flex-col justify-between rounded-xl p-1.5 bg-black border-2 border-black shadow-lg text-white relative hover:scale-[1.02] transition-transform duration-300 ease-out group active:scale-[0.98] text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5D583]"
+          class="w-full min-h-[280px] h-auto flex flex-col justify-between rounded-xl p-1.5 pb-3 bg-black border-2 border-black shadow-lg text-white relative hover:scale-[1.02] transition-transform duration-300 ease-out group active:scale-[0.98] text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5D583]"
         >
           <!-- Dynamic 2px Inner Border Line just inside black frame -->
           <div class="absolute inset-1 border-2 rounded-[10px] pointer-events-none z-10 {theme.border}"></div>
@@ -77,7 +77,7 @@
           <div class="absolute inset-0 rounded-[10px] bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out pointer-events-none z-30"></div>
 
           <!-- The Top Banner Stripe (Ink Tone) -->
-          <h3 class="w-full {theme.bgText.split(' ')[0]} px-3 py-2 font-serif text-xs font-bold line-clamp-2 border-b border-black rounded-t-md z-10 text-[#1C1C1C]">
+          <h3 class="w-full {theme.bgText.split(' ')[0]} px-3 py-2 font-serif text-[clamp(0.7rem,3.5vw,0.75rem)] font-bold line-clamp-2 border-b border-black rounded-t-md z-10 text-[#1C1C1C] leading-[1.3]">
             {post.title}
           </h3>
 
@@ -118,8 +118,8 @@
       <!-- Header Banner (styled like Title Stripe using deterministic color theme) -->
       <div class="w-full border-b-2 border-black z-20 {theme.bgText} px-6 py-4 font-serif text-base sm:text-lg font-bold flex items-center justify-between text-shadow-sm">
         <div class="flex flex-col text-left">
-          <span class="text-[10px] uppercase tracking-widest opacity-80 leading-none mb-1">{selectedPost.category}</span>
-          <span class="leading-tight">{selectedPost.title}</span>
+          <span class="text-[10px] uppercase tracking-widest opacity-80 leading-normal mb-1">{selectedPost.category}</span>
+          <span class="leading-[1.3]">{selectedPost.title}</span>
         </div>
         <button
           type="button"

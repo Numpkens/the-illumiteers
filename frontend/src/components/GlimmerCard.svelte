@@ -72,7 +72,7 @@
   </div>
 
   <!-- THE MIDDLE ZONE: TITLE & IDENTIFIER (Banner Stripe) -->
-  <h3 class="w-full border-b border-black z-10 {theme.bgText} px-3 py-1 font-serif text-sm font-bold tracking-tight line-clamp-1 text-shadow-sm">
+  <h3 class="w-full border-b border-black z-10 {theme.bgText} px-3 py-1 font-serif text-sm font-bold tracking-tight line-clamp-1 text-shadow-sm leading-[1.3]">
     {video.title}
   </h3>
   <div class="w-full bg-[#EFE6D5] text-[#3A2E1A] text-[10px] font-mono tracking-widest uppercase px-3 py-0.5 border-b border-black font-semibold z-10">
